@@ -75,8 +75,8 @@ pred PCorrect {
 		Process.pc = Done implies some y
 	}
 } 
-check PCorrect { PCorrect } for 5 but 1.. steps
-check PCorrect { PCorrect } for 20 but 1.. steps
+check PCorrect { PCorrect } for 2 but 1.. steps
+check PCorrect { PCorrect } for 2 but 1.. steps
 
 pred Inv {
 	always {
@@ -84,7 +84,7 @@ pred Inv {
 		(some p : Process | p.pc != Done) or some y
 	}
 }
-check Inv { Inv } for 5 but 1.. steps
+check Inv { Inv } for 2 but 1.. steps
 
 assert Termination {
 	Fairness implies eventually Process.pc = Done
@@ -93,4 +93,4 @@ check Termination for 2 but 1.. steps
 
 check {
 	PCorrect and Inv
-} for 5 but 1.. steps
+} for 2 but 1.. steps

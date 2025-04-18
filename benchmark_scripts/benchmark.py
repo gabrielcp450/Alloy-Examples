@@ -25,56 +25,66 @@ def benchmark(command):
     process.wait()
 
     if finished_time_ms is not None:
-        print(f"\n:white_check_mark: Model checking time: {finished_time_ms} ms ({finished_time_ms / 1000:.3f} s)")
+        print(f"\n✔️ Model checking time: {finished_time_ms} ms ({finished_time_ms / 1000:.3f} s)")
     else:
-        print(":warning: Could not find 'Finished in ...ms' in output.")
+        print("⚠️ Could not find 'Finished in ...ms' in output.")
 
     return finished_time_ms
 
 def run_benchmarks(command, n_runs=10):
     times = []
-    command =  command.split()
+    command = command.split()
 
     for i in range(n_runs):
-        print(f"\n:arrow_forward: Run {i + 1}/{n_runs}")
+        print(f"\n▶️ Run {i + 1}/{n_runs}")
         time_ms = benchmark(command)
         if time_ms is not None:
             times.append(time_ms)
 
     return times
 
-def plot_results(times1, times2):
-    mean_time1 = statistics.mean(times1)
-    std_dev1 = statistics.stdev(times1) if len(times1) > 1 else 0
-    mean_time2 = statistics.mean(times2)
-    std_dev2 = statistics.stdev(times2) if len(times2) > 1 else 0
+def modify_constants(n):
+    # Call the Python script to modify the files
+    subprocess.run(["python", "changeSimple.py", str(n)], check=True)
 
-    plt.figure(figsize=(6, 4))
-    plt.bar('Alloy', mean_time1, yerr=std_dev1, capsize=5, color='b', alpha=0.7)
-    plt.bar('TLA+', mean_time2, yerr=std_dev2, capsize=5, color='b', alpha=0.7)
-    plt.title('Alloy vs TLA+ (Teaching Concurrency N=10)')
-    plt.ylabel('Time (ms)')
-    plt.grid(axis='y')
+def main():
+    runs = 3  # Number of runs per N
+    n_values = [1, 2, 3, 4, 5]  # X-axis
+
+    alloy_means = []
+    tla_means = []
+
+    for n in n_values:
+        print(f"\n================== N = {n} ==================")
+        modify_constants(n)
+
+        command1 = "java -cp org.alloytools.alloy.dist.jar AlloyRunner.java learning_conc-2.als"
+        command2 = "tlc Simple.tla -tool -modelcheck -coverage 1 -config Simple.cfg"
+
+        times1 = run_benchmarks(command1, runs)
+        times2 = run_benchmarks(command2, runs)
+
+        if times1:
+            alloy_means.append(statistics.mean(times1))
+        else:
+            alloy_means.append(0)
+
+        if times2:
+            tla_means.append(statistics.mean(times2))
+        else:
+            tla_means.append(0)
+
+    # Plotting
+    plt.figure(figsize=(8, 5))
+    plt.plot(n_values, alloy_means, marker='o', label="Alloy")
+    plt.plot(n_values, tla_means, marker='s', label="TLA+")
+    plt.title("Performance vs N")
+    plt.xlabel("N (Problem Size)")
+    plt.ylabel("Time (ms)")
+    plt.legend()
+    plt.grid(True)
     plt.tight_layout()
     plt.show()
 
 if __name__ == "__main__":
-
-    # if len(sys.argv) != 2:
-    #     print("Invalid Arguments:")
-    #     sys.exit()
-
-    runs = 3  # You can change this
-    command = "java -cp org.alloytools.alloy.dist.jar AlloyRunner.java learning_conc-2.als"
-    #sys.argv[1]
-    times1 = run_benchmarks(command, runs)
-    #sys.argv[2]
-    command ="tlc Simple.tla -tool -modelcheck -coverage 1 -config Simple.cfg"
-    times2 = run_benchmarks(command, runs)
-
-    if times1 and times2:
-        print(f"\n:bar_chart: Mean time over {len(times1)} runs: {statistics.mean(times1):.2f} ms")
-        print(f"\n:bar_chart: Mean time over {len(times2)} runs: {statistics.mean(times2):.2f} ms")
-        plot_results(times1, times2)
-    else:
-        print(":x: No valid results to plot.")
+    main()
