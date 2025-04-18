@@ -22,9 +22,13 @@ import edu.mit.csail.sdg.alloy4.WorkerEngine;
 public class AlloyRunner {
     public static void main(String[] args) {
         try {
+            if (args.length < 1) {
+                System.err.println("Usage: java AlloyRunner <alloy_file>");
+                System.exit(1);
+            }
             
             // Load Alloy model
-            File alloyFile = new File("learning_conc.als");
+            File alloyFile = new File(args[0]);
             A4Reporter rep = new A4Reporter();
 
             // Parse the model
