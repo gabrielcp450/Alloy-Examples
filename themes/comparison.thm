@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<!-- Higher contrast colors for comparison -->
+<node>
+<type name="Alloy"/>
+<shape name="Rectangle"/>
+<color name="Blue"/>
+<label/>
+</node>
+
+<node>
+<type name="TLA"/>
+<shape name="Rectangle"/>
+<color name="Red"/>
+<label/>
+</node>
+
+<node>
+<type name="Common"/>
+<shape name="Rectangle"/>
+<color name="Green"/>
+<label/>
+</node>
+
+<!-- Emphasized connections between corresponding elements -->
+<edge>
+<relation name="corresponds">
+<type name="Alloy" type="TLA"/>
+</relation>
+<color name="Black"/>
+<style name="Dashed"/>
+<label/>
+</edge>
+
+<edge>
+<relation name="alloyRelation">
+<type name="Alloy" type="Alloy"/>
+</relation>
+<color name="Blue"/>
+<style name="Solid"/>
+<label/>
+</edge>
+
+<edge>
+<relation name="tlaRelation">
+<type name="TLA" type="TLA"/>
+</relation>
+<color name="Red"/>
+<style name="Solid"/>
+<label/>
+</edge>
+
+</view>
+
+</alloy> 

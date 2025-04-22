@@ -1,0 +1,42 @@
+# Alloy
+*.als.tmp
+
+# Alloy Analyzer
+*.jar
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary Files
+*~
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.sublime-*
+.project
+.classpath
+.settings/
+
+# Build Outputs
+target/
+build/
+dist/
+out/
+bin/
+
+# Logs
+*.log
+logs/
+
+# Documentation temporary files
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/ 

@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Alloy Examples Specifications",
+  "description": "A collection of Alloy specification examples",
+  "type": "object",
+  "required": ["specifications"],
+  "properties": {
+    "specifications": {
+      "type": "array",
+      "description": "List of specification data",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "description", "link", "categories", "authors", "specs", "models"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the specification"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name for the specification"
+          },
+          "description": {
+            "type": "string",
+            "description": "Brief description of the specification"
+          },
+          "link": {
+            "type": "string",
+            "description": "Path to the specification directory"
+          },
+          "categories": {
+            "type": "array",
+            "description": "List of categories the specification belongs to",
+            "items": {
+              "type": "string"
+            }
+          },
+          "authors": {
+            "type": "array",
+            "description": "List of authors of the specification",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Author's name"
+                },
+                "email": {
+                  "type": "string",
+                  "description": "Author's email (optional)"
+                }
+              }
+            }
+          },
+          "specs": {
+            "type": "array",
+            "description": "List of specification files",
+            "items": {
+              "type": "object",
+              "required": ["file", "description"],
+              "properties": {
+                "file": {
+                  "type": "string",
+                  "description": "Filename of the specification"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Brief description of the specification file"
+                },
+                "features": {
+                  "type": "array",
+                  "description": "List of features demonstrated in the specification",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "models": {
+            "type": "array",
+            "description": "List of model files",
+            "items": {
+              "type": "object",
+              "required": ["file", "description"],
+              "properties": {
+                "file": {
+                  "type": "string",
+                  "description": "Filename of the model"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Brief description of the model file"
+                }
+              }
+            }
+          },
+          "beginner": {
+            "type": "boolean",
+            "description": "Whether the example is suitable for beginners"
+          },
+          "tlps_proof": {
+            "type": "boolean",
+            "description": "Whether the example includes formal proofs"
+          },
+          "apalache": {
+            "type": "boolean",
+            "description": "Whether the example is compatible with Apalache"
+          },
+          "pluscal": {
+            "type": "boolean",
+            "description": "Whether the example includes PlusCal code"
+          }
+        }
+      }
+    }
+  }
+} 

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+<type name="State"/>
+<type name="Time"/>
+<shape name="Box"/>
+<color name="Gray"/>
+<label/>
+</node>
+
+<node>
+<type name="Process"/>
+<shape name="Circle"/>
+<color name="Blue"/>
+<label/>
+</node>
+
+<edge>
+<relation name="next">
+<type name="Time" type="Time"/>
+</relation>
+<color name="Black"/>
+<style name="Bold"/>
+<label/>
+</edge>
+
+<edge>
+<relation name="state">
+<type name="Process" type="State"/>
+</relation>
+<color name="Green"/>
+<style name="Solid"/>
+<label/>
+</edge>
+
+</view>
+
+</alloy> 

@@ -1,0 +1,37 @@
+// Standard theme for Alloy Examples repository
+// Use this theme for general visualizations
+
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<projection> <type name="this/Process"/> </projection>
+
+<defaultnode hideunconnected="no" shape="Box" color="Blue"/>
+
+<defaultedge style="solid" color="Gray"/>
+
+<nodetheme name="Process" shape="Box" color="Blue" label="name"/>
+
+<nodetheme name="Status" shape="Circle" color="Yellow" label="name"/>
+
+<nodetheme name="PC" shape="Circle" color="Green" label="name"/>
+
+<edgetheme name="pc" style="solid" weight="3" color="Red" label="yes"/>
+
+<edgetheme name="neighbors" style="solid" weight="2" color="Green" label="no"/>
+
+<edgetheme name="parent" style="bold" weight="3" color="Blue" label="yes"/>
+
+<edgetheme name="children" style="dashed" weight="2" color="Cyan" label="no"/>
+
+<edgetheme name="status" style="solid" weight="3" color="Magenta" label="yes"/>
+
+</view>
+
+</alloy> 

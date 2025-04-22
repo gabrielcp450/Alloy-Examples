@@ -1,0 +1,64 @@
+{
+  "specifications": [
+    {
+      "id": "TeachingConcurrency",
+      "name": "Teaching Concurrency",
+      "description": "A simple example of concurrency specification from Leslie Lamport's paper",
+      "link": "specifications/TeachingConcurrency",
+      "categories": ["concurrency", "beginner"],
+      "authors": [
+        {
+          "name": "Leslie Lamport",
+          "email": ""
+        }
+      ],
+      "specs": [
+        {
+          "file": "Simple.als",
+          "description": "A simple concurrent algorithm specified in Alloy",
+          "features": ["temporal logic", "concurrency"]
+        }
+      ],
+      "models": [
+        {
+          "file": "Simple.als",
+          "description": "Model for the simple concurrent algorithm"
+        }
+      ],
+      "beginner": true,
+      "tlps_proof": false,
+      "apalache": false,
+      "pluscal": false
+    },
+    {
+      "id": "echo",
+      "name": "Echo Algorithm",
+      "description": "A simple distributed algorithm for information dissemination in a network",
+      "link": "specifications/echo",
+      "categories": ["distributed systems", "message passing"],
+      "authors": [
+        {
+          "name": "Stephan Merz",
+          "email": ""
+        }
+      ],
+      "specs": [
+        {
+          "file": "Echo.als",
+          "description": "Echo algorithm specification in Alloy",
+          "features": ["message passing", "distributed algorithm"]
+        }
+      ],
+      "models": [
+        {
+          "file": "Echo.als",
+          "description": "Model for the Echo algorithm"
+        }
+      ],
+      "beginner": false,
+      "tlps_proof": false,
+      "apalache": false,
+      "pluscal": false
+    }
+  ]
+} 
