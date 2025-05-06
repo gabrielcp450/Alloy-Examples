@@ -31,8 +31,7 @@ Here is a list of specifications included in this repository, with links to the 
 Each specification directory typically contains:
 
 - `*.als` - Alloy specification file(s)
-- `README.md` - Description of the specification
-- `comparison.md` - Comparison between Alloy and TLA+ for this specification
+- `README.md` - Description of the specification and comparison with TLA+ version
 - Screenshots or visualizations of the Alloy instance/counterexample
 
 ## Running the Examples
