@@ -68,10 +68,6 @@ This script benchmarks the Echo example with enhanced features for handling comp
   - Handles multiple subruns for TLA+ configurations
   - Aggregates results from multiple subruns
   - Provides detailed progress for each subrun
-- **Error Handling**:
-  - Gracefully handles failed runs
-  - Continues execution after failures
-  - Provides clear error messages
 
 ### 3. `benchmark_TeachingConcurrency.py`
 
@@ -105,11 +101,6 @@ All scripts share these common features:
 - Mean time computation
 - Error bar generation
 
-### Error Handling
-- Graceful handling of failed runs
-- Clear error messages
-- Process cleanup on failure
-- Continuation after errors
 
 ## Usage
 
