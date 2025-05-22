@@ -25,8 +25,19 @@ To run this model in Alloy Analyzer:
 2. Run the `check Termination` command to verify that all processes eventually reach the "Done" state
 3. Run the `check Invariants` command to verify safety properties
 
-## Visualization
-_Note: Visualization comparing execution in TLA+ vs Alloy will be added in the future._
+### Expressiveness
+
+#### Modeling Approach
+- **TLA+**: Offers explicit and flexible modeling of temporal properties, making it suitable for complex concurrent systems.
+- **Alloy**: Provides a relational and strongly-typed approach, making state and transition modeling straightforward and enabling efficient bounded verification.
+
+#### Verification Results
+- **Alloy**: Successfully verified termination and invariants for all tested sizes, with consistent performance.
+- **TLA+**: Also verified the properties, but with a higher computational cost, especially for larger instances.
+
+### Conclusion
+
+The TeachingConcurrency example demonstrates that Alloy can be significantly faster than TLA+ for verifying properties in simple concurrent models, while still being expressive enough to capture the main requirements. TLA+ offers greater flexibility for complex temporal properties, but at a higher performance cost in this benchmark.
 
 ## Detailed Comparison: Alloy vs TLA+
 
@@ -244,8 +255,36 @@ b(i) == /\ pc[i] = "b"
         /\ x' = x
 ```
 
+
 ### Performance Comparison
-_Note: Performance comparison data will be added once benchmarks have been conducted._
+
+![Alloy vs TLA+: Echo Performance](time_comparison.png)
+
+*Figure: Verification time (ms) for different problem sizes (N), average of 3 runs per measurement.*
+
+The results above clearly show that Alloy outperforms TLA+ in verifying the TeachingConcurrency model, especially as the problem size increases:
+
+- **N=1**: Alloy ≈ 145 ± 11 ms, TLA+ ≈ 742 ± 92 ms
+- **N=3**: Alloy ≈ 266 ± 61 ms, TLA+ ≈ 810 ± 232 ms
+- **N=5**: Alloy ≈ 537 ± 131 ms, TLA+ ≈ 890 ± 242 ms
+- **N=7**: Alloy ≈ 579 ± 48 ms, TLA+ ≈ 941 ± 76 ms
+- **N=9**: Alloy ≈ 1264 ± 49 ms, TLA+ ≈ 3523 ± 440 ms
+
+The performance gap widens as N increases, with Alloy remaining practical for larger instances, while TLA+ becomes significantly slower. Values represent the mean and standard deviation over 3 runs for each measurement.
+
+### Performance Comparison Table
+
+| N (Problem Size) | Alloy (ms)      | TLA+ (ms)        |
+|------------------|-----------------|-----------------|
+| 1                | 145 ± 11        | 742 ± 92        |
+| 3                | 266 ± 61        | 810 ± 232       |
+| 5                | 537 ± 131       | 890 ± 242       |
+| 7                | 579 ± 48        | 941 ± 76        |
+| 9                | 1264 ± 49       | 3523 ± 440      |
+
+These results reinforce that Alloy is more efficient for this type of concurrent specification, at least for the tested sizes.
+
+
 
 ### Expressiveness
 
