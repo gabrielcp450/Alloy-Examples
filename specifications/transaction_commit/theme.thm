@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+   <type name="Int"/>
+   <type name="MsgCommit"/>
+   <type name="MsgPrepared"/>
+   <type name="RM"/>
+   <type name="RMAborted"/>
+   <type name="RMCommitted"/>
+   <type name="RMPrepared"/>
+   <type name="RMState"/>
+   <type name="RMWorking"/>
+   <type name="String"/>
+   <type name="TMAborted"/>
+   <type name="TMCommitted"/>
+   <type name="TMInit"/>
+   <type name="univ"/>
+   <type name="seq/Int"/>
+   <set name="TMPrepared" type="RM"/>
+</node>
+
+<node color="Green">
+   <type name="TM"/>
+</node>
+
+<node visible="no">
+   <type name="MsgType"/>
+   <type name="TMState"/>
+</node>
+
+<edge style="inherit" attribute="no">
+   <relation name="state"> <type name="RM"/> <type name="RMState"/> </relation>
+</edge>
+
+<edge style="inherit" visible="no" attribute="yes">
+   <relation name="msgs"> <type name="RM"/> <type name="MsgType"/> </relation>
+   <relation name="state"> <type name="TM"/> <type name="TMState"/> </relation>
+</edge>
+
+</view>
+
+</alloy>
