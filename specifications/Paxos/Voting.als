@@ -15,12 +15,13 @@ sig Quorum {
 
 fact QuorumAssumption {
     Quorum.nodes in Acceptor
-    all Q1, Q2 : Quorum | some Q1 & Q2
+    all Q1, Q2 : Quorum | some Q1.nodes & Q2.nodes
 }
 
-pred QuorumNonEmpty {
-    all Q : Quorum | some Q
+assert QuorumNonEmpty {
+    all Q : Quorum | some Q.nodes
 }
+check QuorumNonEmpty
 
 pred VotedFor[a: Acceptor, b: Ballot, v: Value] {
     b->v in a.votes
@@ -39,6 +40,7 @@ pred DidNotVoteAt[a: Acceptor, b: Ballot] {
 }
 
 pred CannotVoteAt[a: Acceptor, b: Ballot] {
+	some a.maxBal
 	lt[b, a.maxBal]
 	DidNotVoteAt[a, b]
 
@@ -71,15 +73,12 @@ pred OneValuePerBallot {
 }
 
 pred ShowsSafeAt[Q: Quorum, b: Ballot, v: Value] {
-	some Q.nodes
-    all a : (Q.nodes) | gte[a.maxBal, b]
+    all a : (Q.nodes) | some a.maxBal and gte[a.maxBal, b]
 
-    // or theres no votes for ballots smaller than b
-    // or theres some vote but no more after
 	(all d: prevs[b], a: Q.nodes | DidNotVoteAt[a, d]) or (
         some c: prevs[b] {
             some a: Q.nodes | VotedFor[a, c, v]
-            all d: nexts[c] - nexts[b.prev], a: Q.nodes | DidNotVoteAt[a, d]
+            all d: nexts[c] & prevs[b], a: Q.nodes | DidNotVoteAt[a, d]
         } 
     )
 }
@@ -90,19 +89,17 @@ pred Init {
 }
 
 pred IncreaseMaxBal[a: Acceptor, b: Ballot] {
-	lt[a.maxBal, b]
+	no a.maxBal or lt[a.maxBal, b]
     maxBal' = maxBal ++ a->b
     votes' = votes
 }
 
 pred VoteFor[a: Acceptor, b: Ballot, v: Value] {
-	lte[a.maxBal, b]
+	no a.maxBal or lte[a.maxBal, b]
 	no b.(a.votes)
-	all vt : (Acceptor - a).votes {
-		(some b.vt) implies b.vt = v
-	}
+	b.((Acceptor - a).votes) in v
 	some Q : Quorum | ShowsSafeAt[Q, b, v]
-	votes' = votes ++ a->(a.votes + b->v)
+	votes' = votes + a->b->v
 	maxBal' = maxBal ++ (a->b)
 }
 
@@ -110,10 +107,6 @@ pred Next {
     some a : Acceptor, b : Ballot { 
 		IncreaseMaxBal[a, b] or some v : Value { VoteFor[a, b, v] }
 	}
-}
-
-pred Fairness {
-	always eventually Next
 }
 
 pred stuttering {
@@ -126,8 +119,20 @@ fact Spec {
 	always (Next or stuttering)
 }
 
-pred Inv {
-    VotesSafe implies OneValuePerBallot
+// Um exemplo em que um quorum com 3 acceptors escolhe um valor
+run Exemplo {
+	all q : Quorum | q.nodes = Acceptor
+	eventually some chosen
+} for exactly 3 Acceptor, exactly 1 Quorum, exactly 2 Value, 2 Ballot
+
+assert Inv {
+    always (VotesSafe and OneValuePerBallot)
 }
 
-check {OneValuePerBallot implies OneVote} for 1.. steps
+check Inv for 4 but exactly 2 Value, 2 Ballot, 1.. steps
+
+assert Consensus {
+	always lone chosen
+}
+
+check Consensus for 4 but exactly 2 Value, 2 Ballot, 1.. steps
