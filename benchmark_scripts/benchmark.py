@@ -32,20 +32,21 @@ def benchmark(command, working_dir=None):
 
     if finished_time_ms is not None:
         print(
-            f"\n✔️ Model checking time: {finished_time_ms} ms ({finished_time_ms / 1000:.3f} s)"
+            f"\n✔️  Model checking time: {finished_time_ms} ms ({finished_time_ms / 1000:.3f} s)"
         )
     else:
-        print("⚠️ Could not find 'Finished in ...ms' in output.")
+        print("⚠️  Could not find 'Finished in ...ms' in output.")
 
     return finished_time_ms
 
 
-def run_benchmarks(command, n_runs=10, working_dir=None):
+def run_benchmarks(command, n_runs, working_dir=None):
     times = []
 
     for i in range(n_runs):
         print(
-            f"\n▶️ Run '{command}' ({i + 1}/{n_runs}) (workdir={working_dir})")
+            f"\n▶️  Run '{command}' ({i + 1}/{n_runs}) (workdir={working_dir})"
+        )
         time_ms = benchmark(command, working_dir)
         if time_ms is not None:
             times.append(time_ms)
@@ -55,14 +56,31 @@ def run_benchmarks(command, n_runs=10, working_dir=None):
 
 def find_config_directories(base_path):
     """Find all config_Simple_n* directories"""
-    return sorted(
-        [d for d in os.listdir(base_path) if d.startswith("config_") and os.path.isdir(os.path.join(base_path, d))])
+    return sorted([
+        d for d in os.listdir(base_path) if d.startswith("config_")
+        and os.path.isdir(os.path.join(base_path, d))
+    ])
 
 
-def find_tla_directories(base_dir, config_dir):
-    """Find all subdirectories containing TLA+ files for a given config"""
-    return sorted(
-        [d for d in os.listdir(config_dir) if d.startswith("config_") and os.path.isdir(os.path.join(config_dir, d))])
+def find_als_file(base_path):
+    for d in os.listdir(base_path):
+        if d.endswith(".als"):
+            return d
+
+
+def find_tla_file(base_path):
+    for d in os.listdir(base_path):
+        if d.endswith(".cfg"):
+            return os.path.splitext(d)[0] + ".tla", d
+
+
+def sum_arrays(a, b):
+    if not a:  # First iteration
+        return b
+    elif not b:
+        return a
+    else:
+        return [v1 + v2 for v1, v2 in zip(a, b)]
 
 
 def main():
@@ -73,9 +91,10 @@ def main():
 
     # Find all N values from directory names
     config_dirs = find_config_directories(base_dir)
-    print(config_dirs)
+    print("Found config directories: " + "; ".join(config_dirs))
     n_values = [int(d.split('_')[-1][1:])
                 for d in config_dirs]  # Extract n from "config_Simple_nX"
+    print("Testing N: " + str(n_values))
 
     alloy_means = []
     alloy_stds = []
@@ -87,41 +106,42 @@ def main():
         print(f"\n================== N = {n} ==================")
 
         # Path to Alloy file
-        alloy_file = "Simple.als"
+        alloy_file = find_als_file(config_dir)
 
         s = lambda s: os.path.join(script_dir, s)
 
         # Benchmark Alloy
         alloy_command = f"java -cp {s('org.alloytools.alloy.dist.jar')} {s('AlloyRunner.java')} {alloy_file}"
-        times1 = run_benchmarks(alloy_command, runs,
-                                os.path.join(base_dir, config_dir))
+        alloy_times = run_benchmarks(alloy_command, runs,
+                                     os.path.join(base_dir, config_dir))
 
-        if times1:
-            alloy_means.append(statistics.mean(times1))
-            alloy_stds.append(
-                statistics.stdev(times1) if len(times1) > 1 else 0)
+        if alloy_times:
+            alloy_means.append(statistics.mean(alloy_times))
+            alloy_stds.append(statistics.stdev(alloy_times))
         else:
             alloy_means.append(0)
             alloy_stds.append(0)
 
         # Find all TLA+ directories for this config
-        tla_dirs = find_tla_directories(base_dir,
-                                        os.path.join(base_dir, config_dir))
+        tla_dirs = find_config_directories(os.path.join(base_dir, config_dir))
         tla_config_counts.append(len(tla_dirs))  # Store count of TLA configs
         tla_times = []
 
         for tla_dir in tla_dirs:
+            tla_file, tla_config = find_tla_file(
+                os.path.join(config_dir, tla_dir))
+
             # Benchmark each TLA+ configuration
-            tla_command = "tlc Simple.tla -tool -modelcheck -coverage 1 -config Simple.cfg"
-            times = run_benchmarks(tla_command, runs,
-                                   os.path.join(config_dir, tla_dir))
-            if times:
-                tla_times.extend(times)
+            tla_command = f"tlc {tla_file} -tool -modelcheck -coverage 1 -config {tla_config}"
+            times_add = run_benchmarks(
+                tla_command, runs,
+                os.path.join(os.path.join(base_dir, config_dir), tla_dir))
+            if times_add:
+                tla_times = sum_arrays(tla_times, times_add)
 
         if tla_times:
             tla_means.append(statistics.mean(tla_times))
-            tla_stds.append(
-                statistics.stdev(tla_times) if len(tla_times) > 1 else 0)
+            tla_stds.append(statistics.stdev(tla_times))
         else:
             tla_means.append(0)
             tla_stds.append(0)
