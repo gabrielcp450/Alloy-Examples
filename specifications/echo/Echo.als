@@ -23,6 +23,7 @@ sig Node {
 	var pc : one PC,
 	var parent : lone Node,
 	var children : set Node,
+	var rcvd : set Node,
 	var inbox : Type -> Node
 }
 one sig Initiator in Node {}
@@ -46,6 +47,7 @@ pred Init {
 	no inbox
 	no parent
 	no children
+	no rcvd
 	pc = Node->n0
 }
 
@@ -59,19 +61,22 @@ pred n0[n : Node] {
 	pc' = pc ++ n->n1
 	parent' = parent
 	children' = children
+	rcvd' = rcvd
 }
 
 pred n1[n : Node] {
 	n.pc = n1
-	(n.children + n.parent = n.neighbors) implies {
+	(n.rcvd = n.neighbors) implies {
 		pc' = pc ++ n->n2
 		inbox' = inbox
 		parent' = parent	
 		children' = children
+		rcvd' = rcvd
 	} else {
 		some p : Node, t : Type {
 			t->p in n.inbox
-			n != Initiator and no n.children implies {
+			rcvd' = rcvd + n->p
+			n != Initiator and no n.rcvd implies {
 				inbox' = inbox - n->t->p + (n.neighbors-p)->Explorer->n
 				parent' = parent + n->p
 			} else {
@@ -97,6 +102,7 @@ pred n2[n : Node] {
 	}
 	pc' = pc ++ n->Done
 	children' = children
+	rcvd' = rcvd
 	parent' = parent	
 }
 
@@ -108,6 +114,7 @@ pred stuttering {
  	pc' = pc
 	children' = children
 	parent' = parent
+	rcvd' = rcvd
 	inbox' = inbox
 }
 
@@ -127,9 +134,10 @@ fact Spec {
 	always (Next or stuttering)
 }
 
-check Termination {
+run Example {
+	all n : Node | n.neighbors = Node-n
 	eventually Node.pc = Done
-} for 3 but 1..steps
+} for exactly 3 Node, 1..20 steps
 
 // There's no need for checking types since Alloy is a strongly typed language.
 pred TypeOK {}

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+   <type name="Done"/>
+   <type name="Echo"/>
+   <type name="Explorer"/>
+   <type name="Int"/>
+   <type name="N0"/>
+   <type name="N1"/>
+   <type name="N2"/>
+   <type name="Node"/>
+   <type name="String"/>
+   <type name="univ"/>
+   <type name="ordering/Ord"/>
+   <type name="seq/Int"/>
+   <set name="$first" type="PC"/>
+   <set name="$last" type="PC"/>
+</node>
+
+<node color="Green">
+   <set name="Initiator" type="Node"/>
+</node>
+
+<node visible="no">
+   <type name="PC"/>
+   <type name="Type"/>
+</node>
+
+<edge visible="no">
+   <relation name="parent"> <type name="Node"/> <type name="Node"/> </relation>
+</edge>
+
+<edge visible="no" attribute="yes">
+   <relation name="pc"> <type name="Node"/> <type name="PC"/> </relation>
+</edge>
+
+</view>
+
+</alloy>
