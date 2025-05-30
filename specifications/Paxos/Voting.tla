@@ -184,12 +184,12 @@ THEOREM Invariance == Spec => []Inv
 (* for each defined identifier id of module Value, this statement defines  *)
 (* C!id to equal the value of id under these substitutions.                *)
 (***************************************************************************)
-C == INSTANCE Consensus
+\* C == INSTANCE Consensus
 
-THEOREM Spec => C!Spec 
-<1>1. Inv /\ Init => C!Init
-<1>2. Inv /\ [Next]_<<votes, maxBal>> => [C!Next]_chosen
-<1>3. QED
-  BY <1>1, <1>2, Invariance, PTL DEF Spec, C!Spec
+\* THEOREM Spec => C!Spec 
+\* <1>1. Inv /\ Init => C!Init
+\* <1>2. Inv /\ [Next]_<<votes, maxBal>> => [C!Next]_chosen
+\* <1>3. QED
+\*   BY <1>1, <1>2, Invariance, PTL DEF Spec, C!Spec
 
 =============================================================================

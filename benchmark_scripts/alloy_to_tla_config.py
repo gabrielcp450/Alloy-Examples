@@ -41,7 +41,7 @@ def change_block_scope(text, name, scope):
 def create_config_subdirectory(base_name, index, copy_list):
     """Create a directory for the current config and copy files to it."""
     # Create subdirectory name
-    dir_name = f"{base_name}_{index}"
+    dir_name = f"{base_name}_{index:02d}"
     subdir_path = os.path.join(base_name, dir_name)
 
     # Create subdirectory if it doesn't exist
@@ -69,6 +69,10 @@ def list_to_quoted_string(string_list):
     return ", ".join(f'"{item}"' for item in string_list)
 
 
+def list_to_unquoted_string(string_list):
+    return ", ".join(f'{item}' for item in string_list)
+
+
 def edges_to_string(node_labels, actual_edges):
     node_count = len(node_labels)
     lines = []
@@ -86,6 +90,23 @@ def edges_to_string(node_labels, actual_edges):
     return "\n".join(lines)
 
 
+def dict_values_to_string(labels, d):
+    # d = {0: [1], 1: [1,0]}
+    # out: {a1}, {a1, a0}
+    result = []
+    for key in sorted(d.keys()):
+        values = d[key]
+        # Convert each value to its corresponding label
+        label_set = {labels[val] for val in values}
+        # Format as a set string
+        result.append("{" + ", ".join(sorted(label_set)) + "}")
+    return ", ".join(result)
+
+
+def get_object_index(t):
+    return int(re.search(r'.*?(\d+)$', str(t)).group(1))
+
+
 def run(alloy_run_template, create_alloy_config, create_tla_config):
     if len(sys.argv) < 3:
         print("Usage: ./config_gen.py <alloy_file_path> <N>", file=sys.stderr)
@@ -95,7 +116,7 @@ def run(alloy_run_template, create_alloy_config, create_tla_config):
     alloy_file_path = sys.argv[1]
 
     alloy_file_name = os.path.splitext(os.path.basename(alloy_file_path))[0]
-    config_dir_prefix = f"config_{alloy_file_name}_n{n}"
+    config_dir_prefix = f"config_{alloy_file_name}_n{n:02d}"
 
     # Create base directory if it doesn't exist
     if not os.path.exists(config_dir_prefix):

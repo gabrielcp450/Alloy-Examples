@@ -127,14 +127,15 @@ run Exemplo {
 	eventually some chosen
 } for exactly 3 Acceptor, exactly 1 Quorum, exactly 2 Value, 2 Ballot
 
-assert Inv {
-    always (VotesSafe and OneValuePerBallot) 
-}
-
-check Inv for 4 but exactly 2 Value, 2 Ballot, 1.. steps 
+run Config {
+} for exactly 3 Acceptor, exactly 2 Quorum, exactly 2 Value, 2 Ballot
 
 assert Consensus {
 	always lone chosen
 }
 
 check Consensus for 4 but exactly 2 Value, 2 Ballot, 1.. steps
+
+check Inv {
+    always (VotesSafe and OneValuePerBallot) 
+} for 4 but exactly 2 Value, 2 Ballot, 1.. steps 

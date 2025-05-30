@@ -56,7 +56,7 @@ run AllAborted {
 	eventually RM.state = RMAborted
 } for exactly 3 RM
 
-assert TCConsistent {
+check TCConsistent {
 	always {
 		all rm1, rm2 : RM {
 			not {
@@ -65,5 +65,4 @@ assert TCConsistent {
 			}
 		}
 	}
-}
-check TCConsistent for 1.. steps
+} for exactly 3 RM, 1.. steps
